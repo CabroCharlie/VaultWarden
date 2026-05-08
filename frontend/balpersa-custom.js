@@ -44,6 +44,19 @@
     "SSH key",
   ];
 
+  var hiddenLoginDeviceLabels = [
+    "Iniciar sesión con el dispositivo",
+    "Log in with device",
+    "Login with device",
+  ];
+
+  var hiddenAccountMenuLabels = [
+    "Consigue ayuda",
+    "Get help",
+    "Consigue las apps",
+    "Get the apps",
+  ];
+
   var sidebarSelector = [
     "bit-sidenav",
     "nav",
@@ -217,10 +230,80 @@
     });
   }
 
+  function closestLoginPanel(element) {
+    var current = element;
+
+    while (current && current !== document.body) {
+      if (
+        hasText(current, "Contraseña maestra") ||
+        hasText(current, "Master password")
+      ) {
+        return current;
+      }
+
+      current = current.parentElement;
+    }
+
+    return null;
+  }
+
+  function hideLoginDeviceOption() {
+    document.querySelectorAll(textSelector).forEach(function (element) {
+      var text = normalizeText(element.innerText || element.textContent);
+
+      if (!includesLabel(hiddenLoginDeviceLabels, text)) {
+        return;
+      }
+
+      var loginPanel = closestLoginPanel(element);
+
+      if (!loginPanel) {
+        return;
+      }
+
+      var item = closestActionableElement(element, loginPanel);
+      item.classList.add("balpersa-hidden-menu-item");
+      item.setAttribute("data-balpersa-hidden-login", text);
+
+      loginPanel.querySelectorAll(textSelector).forEach(function (separator) {
+        var separatorText = normalizeText(
+          separator.innerText || separator.textContent
+        ).toLowerCase();
+
+        if (separatorText === "o" || separatorText === "or") {
+          separator.classList.add("balpersa-hidden-menu-item");
+          separator.setAttribute("data-balpersa-hidden-login", "separator");
+        }
+      });
+    });
+  }
+
+  function hideAccountMenuEntries() {
+    document.querySelectorAll(menuOverlaySelector).forEach(function (overlay) {
+      overlay.querySelectorAll(textSelector).forEach(function (element) {
+        var text = normalizeText(element.innerText || element.textContent);
+
+        if (!includesLabel(hiddenAccountMenuLabels, text)) {
+          return;
+        }
+
+        if (!hasText(overlay, "Conectado como") && !hasText(overlay, "Logged in as")) {
+          return;
+        }
+
+        var item = closestActionableElement(element, overlay);
+        item.classList.add("balpersa-hidden-menu-item");
+        item.setAttribute("data-balpersa-hidden-account-menu", text);
+      });
+    });
+  }
+
   function applyBalpersaCustomizations() {
     hideSidebarEntries();
     hideVaultFilterEntries();
     hideNewItemMenuEntries();
+    hideLoginDeviceOption();
+    hideAccountMenuEntries();
   }
 
   var style = document.createElement("style");
