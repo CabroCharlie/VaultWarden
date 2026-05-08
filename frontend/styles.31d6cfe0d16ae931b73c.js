@@ -5,7 +5,7 @@
   "use strict";
 
   var script = document.createElement("script");
-  script.src = "balpersa-custom.js";
+  script.src = "balpersa-custom.js?v=balpersa-hide-onboarding-20260508";
   script.defer = true;
   document.head.appendChild(script);
 })();

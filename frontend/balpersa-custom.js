@@ -418,6 +418,41 @@
     });
   }
 
+  function hideGettingStartedPanel() {
+    if (window.location.hash.indexOf("#/vault") !== 0) {
+      return;
+    }
+
+    var candidates = Array.prototype.slice.call(
+      document.querySelectorAll("section, bit-callout, div")
+    );
+
+    var panel = candidates
+      .filter(function (element) {
+        return (
+          hasText(element, "Empezar") &&
+          hasText(element, "Descartar") &&
+          (hasText(element, "Importar datos") || hasText(element, "Import data")) &&
+          (hasText(element, "Instalar extensi") ||
+            hasText(element, "browser extension") ||
+            hasText(element, "Use the extension"))
+        );
+      })
+      .sort(function (first, second) {
+        return (
+          normalizeText(first.innerText || first.textContent).length -
+          normalizeText(second.innerText || second.textContent).length
+        );
+      })[0];
+
+    if (!panel) {
+      return;
+    }
+
+    panel.classList.add("balpersa-hidden-menu-item");
+    panel.setAttribute("data-balpersa-hidden-onboarding", "getting-started");
+  }
+
   function applyBalpersaCustomizations() {
     hideSidebarEntries();
     hideVaultFilterEntries();
@@ -426,6 +461,7 @@
     hideAccountMenuEntries();
     hideAccountSettingsFields();
     hideSecurityTabs();
+    hideGettingStartedPanel();
   }
 
   var style = document.createElement("style");
