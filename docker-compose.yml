@@ -1,0 +1,17 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: always
+    ports:
+      - "443:80"
+    volumes:
+      - C:\vaultwarden\data:/data
+      - C:\vaultwarden\ssl:/ssl
+      - C:\gestorpass\frontend:/web-vault
+    environment:
+      - ADMIN_TOKEN=ADPRSA
+      - DOMAIN=https://192.168.11.77
+      - ROCKET_TLS={certs="/ssl/cert.pem",key="/ssl/key.pem"}
+      - LOG_LEVEL=info
+      - ENABLE_EVENT_LOGGING=true
