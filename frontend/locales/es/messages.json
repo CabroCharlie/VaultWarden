@@ -1810,10 +1810,10 @@
     "message": "Items you delete will appear here and be permanently deleted after 30 days"
   },
   "noItemsInVault": {
-    "message": "No items in the vault"
+    "message": "Todavía no tienes contraseñas guardadas"
   },
   "emptyVaultDescription": {
-    "message": "The vault protects more than just your passwords. Store secure logins, IDs, cards and notes securely here."
+    "message": "Pulsa Nuevo elemento para guardar tu primera contraseña."
   },
   "emptyFavorites": {
     "message": "You haven't favorited any items"
