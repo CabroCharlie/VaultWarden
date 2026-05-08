@@ -18,6 +18,10 @@
     "Reports",
     "Password Manager",
     "Admin Console",
+    "Reglas de dominios",
+    "Domain rules",
+    "Acceso de emergencia",
+    "Emergency access",
   ];
 
   var hiddenVaultFilterLabels = [
@@ -55,6 +59,20 @@
     "Get help",
     "Consigue las apps",
     "Get the apps",
+  ];
+
+  var hiddenAccountSettingsDangerLabels = [
+    "Caja fuerte purgada",
+    "Purge vault",
+    "Eliminar cuenta",
+    "Delete account",
+  ];
+
+  var hiddenSecurityTabLabels = [
+    "Autenticación en dos pasos",
+    "Two-step login",
+    "Claves",
+    "Keys",
   ];
 
   var sidebarSelector = [
@@ -110,6 +128,26 @@
 
   function hasText(element, text) {
     return normalizeText(element.innerText || element.textContent).indexOf(text) !== -1;
+  }
+
+  function isAccountSettingsPage() {
+    return window.location.hash.indexOf("#/settings/account") === 0;
+  }
+
+  function closestByTagPrefix(element, prefix, boundary) {
+    var current = element;
+
+    while (current && current !== boundary && current !== document.body) {
+      var tagName = current.tagName ? current.tagName.toLowerCase() : "";
+
+      if (tagName.indexOf(prefix) === 0) {
+        return current;
+      }
+
+      current = current.parentElement;
+    }
+
+    return null;
   }
 
   function closestActionableElement(element, boundary) {
@@ -298,12 +336,96 @@
     });
   }
 
+  function hideAccountSettingsFields() {
+    if (!isAccountSettingsPage()) {
+      return;
+    }
+
+    document.querySelectorAll(textSelector).forEach(function (element) {
+      var text = normalizeText(element.innerText || element.textContent);
+
+      if (text === "Nombre" || text === "Name") {
+        var nameField =
+          closestByTagPrefix(element, "bit-form-field") ||
+          closestActionableElement(element, document.body);
+
+        nameField.classList.add("balpersa-hidden-menu-item");
+        nameField.setAttribute("data-balpersa-hidden-account-settings", text);
+      }
+
+      if (text === "Personalizar" || text === "Customize") {
+        var customizeButton = closestActionableElement(element, document.body);
+        customizeButton.classList.add("balpersa-hidden-menu-item");
+        customizeButton.setAttribute(
+          "data-balpersa-hidden-account-settings",
+          text
+        );
+
+        var possibleAvatar =
+          customizeButton.previousElementSibling ||
+          (customizeButton.parentElement
+            ? customizeButton.parentElement.previousElementSibling
+            : null);
+
+        if (
+          possibleAvatar &&
+          normalizeText(possibleAvatar.innerText || possibleAvatar.textContent)
+            .length <= 4
+        ) {
+          possibleAvatar.classList.add("balpersa-hidden-menu-item");
+          possibleAvatar.setAttribute(
+            "data-balpersa-hidden-account-settings",
+            "avatar"
+          );
+        }
+      }
+
+      if (text === "Guardar" || text === "Save") {
+        var saveButton = closestActionableElement(element, document.body);
+        saveButton.classList.add("balpersa-hidden-menu-item");
+        saveButton.setAttribute("data-balpersa-hidden-account-settings", text);
+      }
+
+      if (!includesLabel(hiddenAccountSettingsDangerLabels, text)) {
+        return;
+      }
+
+      if (!hasText(document.body, "Zona peligrosa") && !hasText(document.body, "Danger zone")) {
+        return;
+      }
+
+      var dangerButton = closestActionableElement(element, document.body);
+      dangerButton.classList.add("balpersa-hidden-menu-item");
+      dangerButton.setAttribute("data-balpersa-hidden-account-settings", text);
+    });
+  }
+
+  function hideSecurityTabs() {
+    if (window.location.hash.indexOf("#/settings/security") !== 0) {
+      return;
+    }
+
+    document.querySelectorAll(textSelector).forEach(function (element) {
+      var text = normalizeText(element.innerText || element.textContent);
+
+      if (!includesLabel(hiddenSecurityTabLabels, text)) {
+        return;
+      }
+
+      var item = closestActionableElement(element, document.body);
+      item.classList.add("balpersa-hidden-menu-item");
+      item.setAttribute("data-balpersa-hidden-security-tab", text);
+    });
+  }
+
   function applyBalpersaCustomizations() {
     hideSidebarEntries();
     hideVaultFilterEntries();
     hideNewItemMenuEntries();
     hideLoginDeviceOption();
     hideAccountMenuEntries();
+    hideAccountSettingsFields();
+    hideSecurityTabs();
   }
 
   var style = document.createElement("style");
