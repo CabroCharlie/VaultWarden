@@ -453,6 +453,20 @@
     panel.setAttribute("data-balpersa-hidden-onboarding", "getting-started");
   }
 
+  function replaceBrandLogos() {
+    document.querySelectorAll("bit-nav-logo a").forEach(function (link) {
+      if (link.getAttribute("data-balpersa-logo") === "pr-vault") {
+        return;
+      }
+
+      link.innerHTML =
+        '<img class="balpersa-brand-logo" src="images/pr-vault-logo-white.svg" alt="PR Vault">';
+      link.setAttribute("data-balpersa-logo", "pr-vault");
+      link.setAttribute("aria-label", "PR Vault");
+      link.setAttribute("title", "PR Vault");
+    });
+  }
+
   function applyBalpersaCustomizations() {
     hideSidebarEntries();
     hideVaultFilterEntries();
@@ -462,11 +476,16 @@
     hideAccountSettingsFields();
     hideSecurityTabs();
     hideGettingStartedPanel();
+    replaceBrandLogos();
   }
 
   var style = document.createElement("style");
   style.textContent =
-    ".balpersa-hidden-menu-item{display:none!important;visibility:hidden!important;}";
+    ".balpersa-hidden-menu-item{display:none!important;visibility:hidden!important;}" +
+    ".balpersa-brand-logo{display:block!important;width:200px!important;height:50px!important;max-width:100%!important;object-fit:contain!important;object-position:left center!important;}" +
+    "bit-nav-logo a .balpersa-brand-logo{position:absolute!important;inset:.6875rem auto auto .6875rem!important;}" +
+    ".theme_light img.new-logo-themed{content:url(images/pr-vault-logo-dark.svg)!important;}" +
+    ".theme_dark img.new-logo-themed{content:url(images/pr-vault-logo-white.svg)!important;}";
   document.head.appendChild(style);
 
   document.addEventListener("DOMContentLoaded", applyBalpersaCustomizations);
