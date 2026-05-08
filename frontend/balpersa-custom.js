@@ -20,6 +20,30 @@
     "Admin Console",
   ];
 
+  var hiddenVaultFilterLabels = [
+    "Nueva organización",
+    "New organization",
+    "Tarjeta",
+    "Card",
+    "Identidad",
+    "Identity",
+    "Nota",
+    "Note",
+    "Clave SSH",
+    "SSH key",
+  ];
+
+  var hiddenNewItemMenuLabels = [
+    "Tarjeta",
+    "Card",
+    "Identidad",
+    "Identity",
+    "Nota",
+    "Note",
+    "Clave SSH",
+    "SSH key",
+  ];
+
   var sidebarSelector = [
     "bit-sidenav",
     "nav",
@@ -41,12 +65,77 @@
     "span",
   ].join(",");
 
+  var textSelector = [
+    "a",
+    "button",
+    "[role='button']",
+    "[role='link']",
+    "[role='menuitem']",
+    "bit-menu-item",
+    "span",
+    "div",
+  ].join(",");
+
+  var menuOverlaySelector = [
+    ".cdk-overlay-container",
+    ".cdk-overlay-pane",
+    "[role='menu']",
+    "bit-menu",
+  ].join(",");
+
   function normalizeText(value) {
     return (value || "").replace(/\s+/g, " ").trim();
   }
 
   function isHiddenLabel(text) {
     return hiddenMenuLabels.indexOf(text) !== -1;
+  }
+
+  function includesLabel(labels, text) {
+    return labels.indexOf(text) !== -1;
+  }
+
+  function hasText(element, text) {
+    return normalizeText(element.innerText || element.textContent).indexOf(text) !== -1;
+  }
+
+  function closestActionableElement(element, boundary) {
+    var current = element;
+
+    while (current && current !== boundary && current !== document.body) {
+      var tagName = current.tagName ? current.tagName.toLowerCase() : "";
+      var role = current.getAttribute ? current.getAttribute("role") : "";
+
+      if (
+        tagName === "a" ||
+        tagName === "button" ||
+        tagName === "li" ||
+        tagName.indexOf("bit-") === 0 ||
+        role === "button" ||
+        role === "link" ||
+        role === "menuitem"
+      ) {
+        return current;
+      }
+
+      current = current.parentElement;
+    }
+
+    return element;
+  }
+
+  function closestFilterPanel(element) {
+    var current = element;
+
+    while (current && current !== document.body) {
+      if (hasText(current, "FILTROS") || hasText(current, "FILTERS")) {
+        return current;
+      }
+
+      current = current.parentElement;
+    }
+
+    return null;
   }
 
   function findMenuItem(element, sidebar) {
@@ -92,14 +181,56 @@
     });
   }
 
+  function hideVaultFilterEntries() {
+    document.querySelectorAll(textSelector).forEach(function (element) {
+      var text = normalizeText(element.innerText || element.textContent);
+
+      if (!includesLabel(hiddenVaultFilterLabels, text)) {
+        return;
+      }
+
+      var filterPanel = closestFilterPanel(element);
+
+      if (!filterPanel) {
+        return;
+      }
+
+      var item = closestActionableElement(element, filterPanel);
+      item.classList.add("balpersa-hidden-menu-item");
+      item.setAttribute("data-balpersa-hidden-filter", text);
+    });
+  }
+
+  function hideNewItemMenuEntries() {
+    document.querySelectorAll(menuOverlaySelector).forEach(function (overlay) {
+      overlay.querySelectorAll(textSelector).forEach(function (element) {
+        var text = normalizeText(element.innerText || element.textContent);
+
+        if (!includesLabel(hiddenNewItemMenuLabels, text)) {
+          return;
+        }
+
+        var item = closestActionableElement(element, overlay);
+        item.classList.add("balpersa-hidden-menu-item");
+        item.setAttribute("data-balpersa-hidden-new-menu", text);
+      });
+    });
+  }
+
+  function applyBalpersaCustomizations() {
+    hideSidebarEntries();
+    hideVaultFilterEntries();
+    hideNewItemMenuEntries();
+  }
+
   var style = document.createElement("style");
   style.textContent =
     ".balpersa-hidden-menu-item{display:none!important;visibility:hidden!important;}";
   document.head.appendChild(style);
 
-  document.addEventListener("DOMContentLoaded", hideSidebarEntries);
+  document.addEventListener("DOMContentLoaded", applyBalpersaCustomizations);
 
-  var observer = new MutationObserver(hideSidebarEntries);
+  var observer = new MutationObserver(applyBalpersaCustomizations);
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true,
