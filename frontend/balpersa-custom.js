@@ -467,7 +467,34 @@
     });
   }
 
+  function replaceBrowserBranding() {
+    if (document.title.indexOf("Vaultwarden Web") !== -1) {
+      document.title = document.title.replace(/Vaultwarden Web/g, "PR Vault");
+    }
+
+    if (document.title === "Vaultwarden" || document.title === "Bitwarden") {
+      document.title = "PR Vault";
+    }
+
+    document.querySelectorAll("link[rel~='icon']").forEach(function (link) {
+      link.href = "images/pr-vault-favicon.svg?v=20260511";
+      link.type = "image/svg+xml";
+    });
+
+    var shortcutIcon = document.querySelector("link[rel='shortcut icon']");
+
+    if (!shortcutIcon) {
+      shortcutIcon = document.createElement("link");
+      shortcutIcon.rel = "shortcut icon";
+      document.head.appendChild(shortcutIcon);
+    }
+
+    shortcutIcon.href = "images/pr-vault-favicon.svg?v=20260511";
+    shortcutIcon.type = "image/svg+xml";
+  }
+
   function applyBalpersaCustomizations() {
+    replaceBrowserBranding();
     hideSidebarEntries();
     hideVaultFilterEntries();
     hideNewItemMenuEntries();
@@ -495,4 +522,15 @@
     childList: true,
     subtree: true,
   });
+
+  var titleElement = document.querySelector("title");
+
+  if (titleElement) {
+    var titleObserver = new MutationObserver(replaceBrowserBranding);
+    titleObserver.observe(titleElement, {
+      childList: true,
+      characterData: true,
+      subtree: true,
+    });
+  }
 })();
