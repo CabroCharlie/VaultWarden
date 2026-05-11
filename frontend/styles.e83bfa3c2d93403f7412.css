@@ -2114,12 +2114,12 @@ img.new-logo-themed {
 }
 
 .theme_light img.new-logo-themed {
-    content: url(images/logo.svg);
-  }
+    content: url(images/pr-vault-logo-dark.svg);
+}
 
 .theme_dark img.new-logo-themed {
-    content: url(images/logo-white.svg);
-  }
+    content: url(images/pr-vault-logo-white.svg);
+}
 
 .tw-h1 {
   font-size: 1.875rem;
