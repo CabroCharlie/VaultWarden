@@ -9655,5 +9655,9 @@ bit-layout .\[bit-layout_\&\]\:tw-pb-6 {
   padding-bottom: 1.5rem;
 }
 
+app-vault-onboarding {
+  display: none !important;
+}
+
 
 /*# sourceMappingURL=styles.e83bfa3c2d93403f7412.css.map*/
