@@ -2109,16 +2109,32 @@ img.logo {
 
 img.new-logo-themed {
   display: block;
-
-    width: 128px;
+    width: 340px;
+    height: 117px;
+    object-fit: contain;
+    object-position: left center;
 }
 
 .theme_light img.new-logo-themed {
-    content: url(images/pr-vault-logo-dark.svg);
+    content: url(images/pr-vault-logo-principal.png);
 }
 
 .theme_dark img.new-logo-themed {
-    content: url(images/pr-vault-logo-white.svg);
+    content: url(images/pr-vault-logo-principal.png);
+}
+
+bit-landing-header a {
+    width: 340px !important;
+    max-width: 340px !important;
+}
+
+bit-landing-header a bit-svg,
+bit-landing-header a svg,
+bit-landing-header a img {
+    display: block !important;
+    width: 340px !important;
+    height: 117px !important;
+    max-width: none !important;
 }
 
 .tw-h1 {

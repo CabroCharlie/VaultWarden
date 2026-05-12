@@ -460,7 +460,7 @@
       }
 
       link.innerHTML =
-        '<img class="balpersa-brand-logo" src="images/pr-vault-logo-white.svg" alt="PR Vault">';
+        '<img class="balpersa-brand-logo" src="images/pr-vault-logo-principal.png" alt="PR Vault">';
       link.setAttribute("data-balpersa-logo", "pr-vault");
       link.setAttribute("aria-label", "PR Vault");
       link.setAttribute("title", "PR Vault");
@@ -494,16 +494,26 @@
   }
 
   function applyBalpersaCustomizations() {
-    replaceBrowserBranding();
-    hideSidebarEntries();
-    hideVaultFilterEntries();
-    hideNewItemMenuEntries();
-    hideLoginDeviceOption();
-    hideAccountMenuEntries();
-    hideAccountSettingsFields();
-    hideSecurityTabs();
-    hideGettingStartedPanel();
-    replaceBrandLogos();
+    var tasks = [
+      replaceBrowserBranding,
+      replaceBrandLogos,
+      hideSidebarEntries,
+      hideVaultFilterEntries,
+      hideNewItemMenuEntries,
+      hideLoginDeviceOption,
+      hideAccountMenuEntries,
+      hideAccountSettingsFields,
+      hideSecurityTabs,
+      hideGettingStartedPanel,
+    ];
+
+    tasks.forEach(function (task) {
+      try {
+        task();
+      } catch (error) {
+        console.warn("[balpersa-custom] customization step failed:", error);
+      }
+    });
   }
 
   var style = document.createElement("style");
@@ -511,8 +521,9 @@
     ".balpersa-hidden-menu-item{display:none!important;visibility:hidden!important;}" +
     ".balpersa-brand-logo{display:block!important;width:200px!important;height:50px!important;max-width:100%!important;object-fit:contain!important;object-position:left center!important;}" +
     "bit-nav-logo a .balpersa-brand-logo{position:absolute!important;inset:.6875rem auto auto .6875rem!important;}" +
-    ".theme_light img.new-logo-themed{content:url(images/pr-vault-logo-dark.svg)!important;}" +
-    ".theme_dark img.new-logo-themed{content:url(images/pr-vault-logo-white.svg)!important;}";
+    "bit-nav-logo a{position:relative!important;overflow:visible!important;}" +
+    "bit-nav-logo a bit-icon,bit-nav-logo a svg,bit-nav-logo a .bwi,bit-nav-logo a span{opacity:0!important;}" +
+    "bit-nav-logo a::after{content:''!important;position:absolute!important;inset:.6875rem auto auto .6875rem!important;width:200px!important;height:50px!important;background:url(images/pr-vault-logo-principal.png) no-repeat left center / contain!important;display:block!important;}";
   document.head.appendChild(style);
 
   document.addEventListener("DOMContentLoaded", applyBalpersaCustomizations);

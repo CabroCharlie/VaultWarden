@@ -5,7 +5,7 @@
   "use strict";
 
   var script = document.createElement("script");
-  script.src = "balpersa-custom.js?v=balpersa-tab-branding-20260511";
+  script.src = "balpersa-custom.js?v=balpersa-tab-branding-20260512-login-static";
   script.defer = true;
   document.head.appendChild(script);
 })();
